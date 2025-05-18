@@ -40,12 +40,9 @@ export default function Home() {
   const {
     isLoading,
     error,
-    response,
     tokens: apiTokens,
     neurons: apiNeurons,
     connections: apiConnections,
-    selectedToken,
-    selectedNeuron,
     neuronHistory,
     processPrompt,
     selectToken,
@@ -53,12 +50,9 @@ export default function Home() {
   } = client ? useOpenAI(client) : {
     isLoading: false,
     error: null,
-    response: null,
     tokens: [],
     neurons: [],
     connections: [],
-    selectedToken: null,
-    selectedNeuron: null,
     neuronHistory: [],
     processPrompt: async () => {},
     selectToken: () => {},
@@ -399,7 +393,6 @@ export default function Home() {
           <NeuronModel
             neurons={displayNeurons}
             connections={displayConnections}
-            selectedToken={localSelectedToken}
             selectedNeuron={localSelectedNeuron}
             onNeuronClick={handleNeuronClick}
           />
