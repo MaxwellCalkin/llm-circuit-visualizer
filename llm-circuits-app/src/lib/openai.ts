@@ -96,7 +96,7 @@ export class OpenAIClient {
    * Get the activation history for a specific neuron
    * This would be implemented with real data in a production system
    */
-  async getNeuronHistory(neuronId: string): Promise<{
+  async getNeuronHistory(_neuronId: string): Promise<{
     token: string;
     activation: number;
     context?: string;

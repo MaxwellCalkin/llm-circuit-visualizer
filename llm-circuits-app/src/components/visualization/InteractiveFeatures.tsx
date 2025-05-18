@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Html } from '@react-three/drei';
+import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
 interface NeuronHistoryModalProps {
