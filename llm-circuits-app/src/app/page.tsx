@@ -57,17 +57,15 @@ export default function Home() {
   const {
     isLoading,
     error,
-    response,
     tokens: apiTokens,
     neurons: apiNeurons,
     connections: apiConnections,
-    selectedToken,
-    selectedNeuron,
     neuronHistory,
     processPrompt,
     selectToken,
     selectNeuron
   } = useOpenAI(client);
+
   
   // Mock data for development when no API key is provided
   const mockTokens = [
@@ -417,7 +415,6 @@ export default function Home() {
           <NeuronModel
             neurons={displayNeurons}
             connections={displayConnections}
-            selectedToken={localSelectedToken}
             selectedNeuron={localSelectedNeuron}
             onNeuronClick={handleNeuronClick}
           />

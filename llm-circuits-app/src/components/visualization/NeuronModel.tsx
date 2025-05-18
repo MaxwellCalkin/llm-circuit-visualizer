@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Sphere, Line, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -21,7 +21,6 @@ interface Connection {
 interface NeuronModelProps {
   neurons: Neuron[];
   connections: Connection[];
-  selectedToken?: string;
   selectedNeuron?: string;
   onNeuronClick?: (neuronId: string) => void;
 }
@@ -124,14 +123,12 @@ const LayerLabel: React.FC<{
 };
 
 // Main 3D scene component
-const NeuronScene: React.FC<NeuronModelProps> = ({ 
-  neurons, 
-  connections, 
-  selectedToken, 
+const NeuronScene: React.FC<NeuronModelProps> = ({
+  neurons,
+  connections,
   selectedNeuron,
-  onNeuronClick 
+  onNeuronClick
 }) => {
-  const [hoveredNeuron, setHoveredNeuron] = useState<string | null>(null);
   
   // Group neurons by layer for positioning
   const layerMap = new Map<number, Neuron[]>();
@@ -199,7 +196,7 @@ const NeuronScene: React.FC<NeuronModelProps> = ({
         <NeuronNode
           key={neuron.id}
           neuron={neuron}
-          isSelected={neuron.id === selectedNeuron || neuron.id === hoveredNeuron}
+          isSelected={neuron.id === selectedNeuron}
           onClick={() => onNeuronClick && onNeuronClick(neuron.id)}
         />
       ))}
