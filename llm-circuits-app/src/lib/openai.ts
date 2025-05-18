@@ -22,8 +22,23 @@ export interface ConnectionData {
   weight: number;
 }
 
+// Generic interface for any LLM service client
+export interface LLMClient {
+  processPrompt(prompt: string): Promise<{
+    response: string;
+    tokens: TokenData[];
+    neurons: NeuronActivation[];
+    connections: ConnectionData[];
+  }>;
+  getNeuronHistory(neuronId: string): Promise<{
+    token: string;
+    activation: number;
+    context?: string;
+  }[]>;
+}
+
 // Main OpenAI API client class
-export class OpenAIClient {
+export class OpenAIClient implements LLMClient {
   private client: OpenAI;
   
   constructor(apiKey: string) {
@@ -96,7 +111,7 @@ export class OpenAIClient {
    * Get the activation history for a specific neuron
    * This would be implemented with real data in a production system
    */
-  async getNeuronHistory(_neuronId: string): Promise<{
+  async getNeuronHistory(neuronId: string): Promise<{
     token: string;
     activation: number;
     context?: string;
@@ -118,7 +133,7 @@ export class OpenAIClient {
       mockHistory.push({
         token,
         activation: 0.5 + Math.random() * 0.5, // 0.5 to 1.0
-        context: `...text containing ${token}...`
+        context: `Neuron ${neuronId} ...text containing ${token}...`
       });
     }
     

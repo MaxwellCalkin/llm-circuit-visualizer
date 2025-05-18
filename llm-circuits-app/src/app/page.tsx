@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NeuronHistoryModal, TokenComparisonModal } from '@/components/visualization/InteractiveFeatures';
 import NeuronModel from '@/components/visualization/NeuronModel';
 import TokenExplorer from '@/components/visualization/TokenExplorer';
 import NeuronInspector from '@/components/visualization/NeuronInspector';
-import { initializeOpenAIClient, ConnectionData } from '@/lib/openai';
-import type { OpenAIClient } from '@/lib/openai';
+import { initializeOpenAIClient, type LLMClient, ConnectionData } from '@/lib/openai';
+import { initializeTransformerLensClient } from '@/lib/transformerlens';
 import { useOpenAI } from '@/hooks/useOpenAI';
 
 interface MockNeuron {
@@ -27,28 +27,33 @@ interface MockNeuronData {
 
 // Enhanced version of the page component with interactive features
 export default function Home() {
+  const [service, setService] = useState<'openai' | 'transformer'>('openai');
+  const [baseUrl, setBaseUrl] = useState<string>('');
   const [apiKey, setApiKey] = useState<string>('');
   const [isApiKeySet, setIsApiKeySet] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>('');
-  const [client, setClient] = useState<OpenAIClient | null>(null);
+  const [client, setClient] = useState<LLMClient | null>(null);
   
   // Modal states
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
   const [showComparisonModal, setShowComparisonModal] = useState<boolean>(false);
   const [tokensForComparison, setTokensForComparison] = useState<string[]>([]);
   
-  // Initialize OpenAI client when API key is set
-  useEffect(() => {
-    if (apiKey && !isApiKeySet) {
-      try {
-        const client = initializeOpenAIClient(apiKey);
-        setClient(client);
-        setIsApiKeySet(true);
-      } catch (error) {
-        console.error('Error initializing OpenAI client:', error);
+  // Set up client when user submits credentials
+  const handleSetCredentials = () => {
+    try {
+      let newClient: LLMClient;
+      if (service === 'openai') {
+        newClient = initializeOpenAIClient(apiKey);
+      } else {
+        newClient = initializeTransformerLensClient(baseUrl, apiKey);
       }
+      setClient(newClient);
+      setIsApiKeySet(true);
+    } catch (error) {
+      console.error('Error initializing client:', error);
     }
-  }, [apiKey, isApiKeySet]);
+  };
   
   // Use mock data when no API key is provided
   const useMockData = !isApiKeySet;
@@ -333,17 +338,34 @@ export default function Home() {
         {/* API Key input */}
         {!isApiKeySet && (
           <div className="mb-8">
-            <div className="flex">
+            <div className="flex flex-col gap-2 md:flex-row">
+              <select
+                className="p-3 bg-gray-800 border border-gray-700 text-white rounded"
+                value={service}
+                onChange={(e) => setService(e.target.value as 'openai' | 'transformer')}
+              >
+                <option value="openai">OpenAI</option>
+                <option value="transformer">TransformerLens</option>
+              </select>
+              {service === 'transformer' && (
+                <input
+                  type="text"
+                  placeholder="Base URL"
+                  className="p-3 bg-gray-800 border border-gray-700 text-white rounded md:flex-1"
+                  value={baseUrl}
+                  onChange={(e) => setBaseUrl(e.target.value)}
+                />
+              )}
               <input
                 type="password"
-                placeholder="Enter your OpenAI API key..."
-                className="flex-1 p-3 bg-gray-800 border border-gray-700 rounded-l text-white"
+                placeholder={service === 'openai' ? 'Enter your API key...' : 'API key (optional)'}
+                className="flex-1 p-3 bg-gray-800 border border-gray-700 rounded text-white"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
-              <button 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-r"
-                onClick={() => setIsApiKeySet(true)}
+              <button
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded"
+                onClick={handleSetCredentials}
               >
                 Set Key
               </button>
