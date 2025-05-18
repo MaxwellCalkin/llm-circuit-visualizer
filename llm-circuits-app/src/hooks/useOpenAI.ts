@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OpenAIClient, TokenData, NeuronActivation, ConnectionData } from '@/lib/openai';
+import { type LLMClient, TokenData, NeuronActivation, ConnectionData } from '@/lib/openai';
 
 // Define the interface for the hook return value
 interface UseOpenAIReturn {
@@ -17,8 +17,8 @@ interface UseOpenAIReturn {
   selectNeuron: (neuronId: string) => Promise<void>;
 }
 
-// Custom hook for OpenAI integration
-export function useOpenAI(client: OpenAIClient | null): UseOpenAIReturn {
+// Custom hook for LLM service integration
+export function useOpenAI(client: LLMClient | null): UseOpenAIReturn {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
@@ -32,7 +32,7 @@ export function useOpenAI(client: OpenAIClient | null): UseOpenAIReturn {
   // Process a prompt and get the response with neuron activations
   const processPrompt = async (prompt: string) => {
     if (!client) {
-      setError('OpenAI client not initialized');
+      setError('LLM client not initialized');
       return;
     }
     setIsLoading(true);

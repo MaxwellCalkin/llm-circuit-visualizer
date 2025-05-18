@@ -16,7 +16,7 @@ LLM Circuits Visualizer provides an interactive 3D visualization of neuron activ
 - **Token-Neuron Relationship**: See which neurons activate for specific tokens in the LLM's response
 - **Neuron Inspection**: Click on neurons to view detailed information about their activation patterns and history
 - **Token Comparison**: Compare activation patterns across different tokens
-- **OpenAI API Integration**: Connect to OpenAI's API to process real prompts (requires API key)
+- **API Integration**: Connect to OpenAI or a TransformerLens service to process real prompts
 - **Mock Data Mode**: Explore the visualization capabilities with mock data when no API key is provided
 
 ## Usage Guide
@@ -26,7 +26,7 @@ LLM Circuits Visualizer provides an interactive 3D visualization of neuron activ
 1. Visit the [LLM Circuits Visualizer](https://uxztkcbe.manus.space)
 2. You can use the application in two modes:
    - **Mock Data Mode**: Explore the visualization with pre-generated mock data
-   - **API Mode**: Enter your OpenAI API key to process real prompts
+   - **API Mode**: Enter your OpenAI API key or a TransformerLens endpoint to process real prompts
 
 ### Entering Prompts
 
@@ -60,21 +60,21 @@ The LLM Circuits Visualizer is built with:
 
 - **Next.js**: React framework for the frontend application
 - **Three.js**: 3D visualization library (via React Three Fiber)
-- **OpenAI API**: For processing prompts and accessing neuron activations
+- **OpenAI API / TransformerLens Service**: For processing prompts and accessing neuron activations
 - **Tailwind CSS**: For styling the user interface
 
 ### Data Flow
 
 1. User enters a prompt
-2. Prompt is sent to OpenAI API
-3. API returns the response along with neuron activation data
+2. Prompt is sent to the selected API (OpenAI or TransformerLens)
+3. The service returns the response along with neuron activation data
 4. Visualization components render the neurons and their connections in 3D space
 5. User interactions update the visualization to show relevant information
 
 ### Limitations
 
 - The current implementation uses mock data for neuron activations when no API key is provided
-- Accessing actual neuron activations from OpenAI's API would require special endpoints or model instrumentation
+- Accessing real activations may require specialized endpoints or model instrumentation
 - The visualization is a simplified representation of the actual neural network architecture
 
 ## Future Enhancements

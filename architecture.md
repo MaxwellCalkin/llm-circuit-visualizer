@@ -15,13 +15,13 @@ The LLM Circuits Visualizer will be a Next.js application that provides an inter
 
 ### 2. Data Flow Architecture
 ```
-User Prompt → OpenAI API → Response + Activation Data → Visualization Renderer
+User Prompt → LLM API → Response + Activation Data → Visualization Renderer
                                                       ↓
                             User Interaction ← Interactive Elements
 ```
 
 ### 3. Backend Services
-- **OpenAI API Integration**: Service to send prompts and receive responses
+- **LLM API Integration**: Service to send prompts and receive responses (OpenAI or TransformerLens)
 - **Activation Data Processor**: Module to extract and format neuron activation data
 - **Data Storage**: System to store activation history for neurons
 
@@ -42,7 +42,7 @@ User Prompt → OpenAI API → Response + Activation Data → Visualization Rend
 - **UI Components**: Custom components with responsive design
 
 ### Backend (API Routes in Next.js)
-- **API Integration**: OpenAI API client
+- **API Integration**: LLM API client (OpenAI or TransformerLens)
 - **Data Processing**: Server-side processing of activation data
 - **Caching**: Response and activation data caching for performance
 
@@ -114,7 +114,7 @@ interface NeuronActivation {
 
 ## Implementation Phases
 1. Basic UI setup with prompt input and response display
-2. Integration with OpenAI API
+2. Integration with LLM API
 3. Simple 3D visualization of neurons
 4. Token-neuron association implementation
 5. Interactive features for token exploration
@@ -124,8 +124,8 @@ interface NeuronActivation {
 
 ## Technical Challenges and Solutions
 
-### Challenge: Accessing Neuron Activations
-- Solution: Use OpenAI's API with special parameters to request activation data
+-### Challenge: Accessing Neuron Activations
+- Solution: Use specialized API endpoints (OpenAI or TransformerLens) to request activation data
 - Alternative: Implement a simplified model of activation patterns if direct access is limited
 
 ### Challenge: Performance with Large Neural Networks
