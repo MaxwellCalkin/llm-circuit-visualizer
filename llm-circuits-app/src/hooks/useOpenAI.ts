@@ -18,7 +18,7 @@ interface UseOpenAIReturn {
 }
 
 // Custom hook for OpenAI integration
-export function useOpenAI(client: OpenAIClient): UseOpenAIReturn {
+export function useOpenAI(client: OpenAIClient | null): UseOpenAIReturn {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<string | null>(null);
@@ -31,6 +31,10 @@ export function useOpenAI(client: OpenAIClient): UseOpenAIReturn {
 
   // Process a prompt and get the response with neuron activations
   const processPrompt = async (prompt: string) => {
+    if (!client) {
+      setError('OpenAI client not initialized');
+      return;
+    }
     setIsLoading(true);
     setError(null);
     setResponse(null);
@@ -65,7 +69,11 @@ export function useOpenAI(client: OpenAIClient): UseOpenAIReturn {
   // Select a neuron to view its details and history
   const selectNeuron = async (neuronId: string) => {
     setSelectedNeuron(neuronId);
-    
+
+    if (!client) {
+      return;
+    }
+
     try {
       const history = await client.getNeuronHistory(neuronId);
       setNeuronHistory(history);

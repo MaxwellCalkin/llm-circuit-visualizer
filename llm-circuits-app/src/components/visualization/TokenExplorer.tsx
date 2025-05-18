@@ -39,7 +39,7 @@ const TokenExplorer: React.FC<TokenExplorerProps> = ({
       {selectedToken && tokenNeuronMap && (
         <div>
           <h3 className="text-md font-semibold text-gray-300 mb-2">
-            Top Neurons for "{selectedToken}"
+            Top Neurons for &quot;{selectedToken}&quot;
           </h3>
           <div className="max-h-60 overflow-y-auto">
             <table className="w-full text-sm text-left text-gray-300">
