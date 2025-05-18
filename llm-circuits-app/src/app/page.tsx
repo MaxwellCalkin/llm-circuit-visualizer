@@ -5,7 +5,7 @@ import { NeuronHistoryModal, TokenComparisonModal } from '@/components/visualiza
 import NeuronModel from '@/components/visualization/NeuronModel';
 import TokenExplorer from '@/components/visualization/TokenExplorer';
 import NeuronInspector from '@/components/visualization/NeuronInspector';
-import { initializeOpenAIClient, getOpenAIClient } from '@/lib/openai';
+import { initializeOpenAIClient } from '@/lib/openai';
 import { useOpenAI } from '@/hooks/useOpenAI';
 
 // Enhanced version of the page component with interactive features
