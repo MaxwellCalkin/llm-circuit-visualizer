@@ -5,15 +5,32 @@ import { NeuronHistoryModal, TokenComparisonModal } from '@/components/visualiza
 import NeuronModel from '@/components/visualization/NeuronModel';
 import TokenExplorer from '@/components/visualization/TokenExplorer';
 import NeuronInspector from '@/components/visualization/NeuronInspector';
-import { initializeOpenAIClient } from '@/lib/openai';
+import { initializeOpenAIClient, ConnectionData } from '@/lib/openai';
+import type { OpenAIClient } from '@/lib/openai';
 import { useOpenAI } from '@/hooks/useOpenAI';
+
+interface MockNeuron {
+  id: string;
+  layer: number;
+  head?: number;
+  position: [number, number, number];
+  activationValue: number;
+}
+
+interface MockNeuronData {
+  id: string;
+  layer: number;
+  head?: number;
+  activationValue: number;
+  topTokens: Array<{ token: string; activation: number; context: string }>;
+}
 
 // Enhanced version of the page component with interactive features
 export default function Home() {
   const [apiKey, setApiKey] = useState<string>('');
   const [isApiKeySet, setIsApiKeySet] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>('');
-  const [client, setClient] = useState<any>(null);
+  const [client, setClient] = useState<OpenAIClient | null>(null);
   
   // Modal states
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
@@ -47,17 +64,8 @@ export default function Home() {
     processPrompt,
     selectToken,
     selectNeuron
-  } = client ? useOpenAI(client) : {
-    isLoading: false,
-    error: null,
-    tokens: [],
-    neurons: [],
-    connections: [],
-    neuronHistory: [],
-    processPrompt: async () => {},
-    selectToken: () => {},
-    selectNeuron: async () => {}
-  };
+  } = useOpenAI(client);
+
   
   // Mock data for development when no API key is provided
   const mockTokens = [
@@ -67,8 +75,11 @@ export default function Home() {
   ];
   
   // Generate mock neurons
-  const generateMockNeurons = (layerCount: number, neuronsPerLayer: number) => {
-    const neurons = [];
+  const generateMockNeurons = (
+    layerCount: number,
+    neuronsPerLayer: number
+  ): MockNeuron[] => {
+    const neurons: MockNeuron[] = [];
     
     for (let layer = 1; layer <= layerCount; layer++) {
       for (let i = 0; i < neuronsPerLayer; i++) {
@@ -97,9 +108,12 @@ export default function Home() {
   };
   
   // Generate mock connections
-  const generateMockConnections = (neurons: any[], connectionDensity: number) => {
-    const connections = [];
-    const neuronsByLayer = new Map<number, any[]>();
+  const generateMockConnections = (
+    neurons: MockNeuron[],
+    connectionDensity: number
+  ): ConnectionData[] => {
+    const connections: ConnectionData[] = [];
+    const neuronsByLayer = new Map<number, MockNeuron[]>();
     
     // Group neurons by layer
     neurons.forEach(neuron => {
@@ -140,7 +154,10 @@ export default function Home() {
   };
   
   // Mock token-neuron associations
-  const generateMockTokenNeuronMap = (tokens: string[], neurons: any[]) => {
+  const generateMockTokenNeuronMap = (
+    tokens: string[],
+    neurons: MockNeuron[]
+  ): Record<string, string[]> => {
     const tokenNeuronMap: Record<string, string[]> = {};
     
     tokens.forEach(token => {
@@ -160,7 +177,10 @@ export default function Home() {
   };
   
   // Mock neuron data for inspector
-  const getMockNeuronData = (neuronId: string, neurons: any[]) => {
+  const getMockNeuronData = (
+    neuronId: string,
+    neurons: MockNeuron[]
+  ): MockNeuronData | null => {
     const neuron = neurons.find(n => n.id === neuronId);
     
     if (!neuron) return null;
@@ -217,7 +237,9 @@ export default function Home() {
   // Local state for UI
   const [localSelectedToken, setLocalSelectedToken] = useState<string | undefined>(undefined);
   const [localSelectedNeuron, setLocalSelectedNeuron] = useState<string | undefined>(undefined);
-  const [neuronData, setNeuronData] = useState<any | undefined>(undefined);
+  const [neuronData, setNeuronData] = useState<MockNeuronData | undefined>(
+    undefined
+  );
   
   // Mock neuron history data
   const mockNeuronHistory = [
